@@ -1,0 +1,73 @@
+TERRAIN GENERATOR USER MANUAL
+
+-------------------------------------------------------------------------------
+
+Mouse:
+
+- Click & Drag: Terrain Rotation
+- Scroll: Zoom In & Out
+
+-------------------------------------------------------------------------------
+
+Menu:
+
+- Detail Slider: Controls the detail level of the NoiseMaps, which adds or
+  removes complexity to the scene. The detail controls the side length of the
+  square, which is 2^detail + 1. Ranges from 1 - 7.
+  
+- Smoothness Slider: Controls the level at which the random variation in the
+  NoiseMap generation becomes negligable. This results in a terrain that is
+  smoother at higher values, and very rough at lower values.
+  
+- Blending Slider: Controls the smoothness of the NoiseMap generated for
+  coloring the terrain.
+  
+- Generate Terrain Button: When clicked, a new terrain is generated using the
+  current detail slider, smoothness and blending values. The controls below
+  are only used to modify the scene coloring & shading, they do not change
+  the Terrain object in any way.
+  
+- Amplitude Slider: Stretches the Terrain upwards and downwards, resulting in
+  shallow terrains at low values and steep mountains (usually) at higher
+  values.
+
+- Breadth Slider: Stretches the Terrain along the x and z axes, causing the 
+  Terrain to spread out at higher values and scrunch together at lower values.
+
+- Background Color Sliders: Individual sliders for the Red, Green, and Blue
+  components of the background color. Updates without having to generate new
+  Terrain.
+  
+- Ambient Color Sliders: Individual sliders for the Red, Green, and Blue
+  components of the ambient lighting added to all faces across the terrain.
+  Updates without having to generate new terrain.
+  
+- Light Color Sliders: Individual sliders for the Red, Green, and Blue
+  components of the directional light in the scene, which shines down directly
+  from above. The directional light remains stationary (as it is infinitely far
+  away) while the user rotates & manipulates the scene.
+
+- Terrain Color 1 Sliders: Individual sliders for the Red, Green, and Blue
+  components of high color in the Terrain color map.
+  
+- Terrain Color 2 Sliders: Individual sliders for the Red, Green, and Blue
+  components of low color in the Terrain color map.
+  
+- Randomize Button: Randomizes the Smoothness & Blending and generates a new
+  Terrain. Also chooses a random value for the Amplitude, Breadth, Ambient Color,
+  Directional Light Color, Terrain Color 1 and Terrain color 2. When pressed,
+  generates a very new and unique environment. Note: Random values may not be
+  across entire range of slider (this is intentional - to ensure generally
+  good looking environments).
+  
+-------------------------------------------------------------------------------
+  
+Additional Information:
+
+- For best results, consider high choosing highly contrasting colors for
+  Terrain Color 1 & 2.
+  
+- Consider Ambient Colors where Red, Green & Blue values are rougly equal.
+
+- It may be necessary to zoom in or out when choosing extreme Amplitude or
+  Breadth values.

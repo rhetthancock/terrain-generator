@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Terrain Generation</title>
+    <link href="styles.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="glMatrix_util.js"></script>
+    <script type="text/javascript" src="webgl-utils.js"></script>
+    <script src="NoiseMap.js"></script>
+    <script src="Terrain.js"></script>
+    <script src="functions.js"></script>
+    <script id="shader-vertex" type="x-shader/x-vertex">
+        attribute vec4 aVertex;
+        attribute vec3 aNormal;
+        attribute float aColorWeight;
+        uniform vec3 uAmbient;
+        uniform vec3 uColor1;
+        uniform vec3 uColor2;
+        uniform vec3 uDirectional;
+        uniform mat4 uModelView;
+        uniform mat4 uNormalView;
+        uniform mat4 uProjection;
+        varying highp vec3 vAmbient;
+        varying highp vec3 vColor1;
+        varying highp vec3 vColor2;
+        varying highp float vColorWeight;
+        varying highp vec3 vDirectional;
+        varying highp vec4 vNormal;
+        
+        void main() {
+            vNormal = uNormalView * vec4(aNormal, 1.0);
+            if(aVertex.y > 0.0) {
+                vColorWeight = aColorWeight;
+            }
+            else {
+                vColorWeight = 1.0;
+            }
+            vAmbient = uAmbient;
+            vColor1 = uColor1;
+            vColor2 = uColor2;
+            vDirectional = uDirectional;
+            gl_Position = uProjection * uModelView * aVertex;
+        }
+    </script>
+    <script id="shader-fragment" type="x-shader/x-fragment">
+        precision mediump float;
+        varying highp vec3 vAmbient;
+        varying highp vec3 vColor1;
+        varying highp vec3 vColor2;
+        varying highp float vColorWeight;
+        varying highp vec3 vDirectional;
+        varying highp vec4 vNormal;
+        
+        void main() {
+            highp vec4 texelColor = vec4(vColor1 * vColorWeight + vColor2 * (1.0 - vColorWeight), 1.0);
+            highp vec3 ambientColor = vec3(0.5, 0.3, 0.9);
+            highp vec3 directionalColor = vec3(0.5, 1.0, 0.5);
+            highp vec3 directionalVector = normalize(vec3(0.0, 1.0, 0.0));
+            highp float directionalWeight = max(dot(vNormal.xyz, directionalVector), 0.0);
+            highp vec3 lighting = vAmbient + (vDirectional * directionalWeight);
+            
+            gl_FragColor = vec4(texelColor.rgb * lighting, texelColor.a); 
+        }
+    </script>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="controls">
+        <div class="group">
+            <label>Detail</label>
+            <input class="slider" id="detail" max="7" min="1" step="1" type="range" value="7">
+            <label>Smoothness</label>
+            <input class="slider" id="smoothness" max="5.0" min="1.0" step="0.05" type="range" value="2.0">
+            <label>Blending</label>
+            <input class="slider" id="blending" max="10.0" min="1.0" step="0.1" type="range" value="2.0">
+            <button class="button" id="generate">Generate Terrain</button>
+        </div>
+        <div class="group">
+            <label>Amplitude</label>
+            <input class="slider" id="amplitude" max="5.0" min="0.1" step="0.1" type="range" value="1.0">
+            <label>Breadth</label>
+            <input class="slider" id="size" max="10.0" min="0.1" step="0.1" type="range" value="1.0">
+        </div>
+        <div class="group">
+            <label>Background Color</label>
+            <input class="slider slider-r" id="background-r" max="255" min="0" type="range" value="75">
+            <input class="slider slider-g" id="background-g" max="255" min="0" type="range" value="75">
+            <input class="slider slider-b" id="background-b" max="255" min="0" type="range" value="75">
+        </div>
+        <div class="group">
+            <label>Ambient Color</label>
+            <input class="slider slider-r" id="ambient-r" max="255" min="0" type="range" value="75">
+            <input class="slider slider-g" id="ambient-g" max="255" min="0" type="range" value="75">
+            <input class="slider slider-b" id="ambient-b" max="255" min="0" type="range" value="75">
+        </div>
+        <div class="group">
+            <label>Light Color</label>
+            <input class="slider slider-r" id="directional-r" max="255" min="0" type="range" value="175">
+            <input class="slider slider-g" id="directional-g" max="255" min="0" type="range" value="175">
+            <input class="slider slider-b" id="directional-b" max="255" min="0" type="range" value="175">
+        </div>
+        <div class="group">
+            <label>Terrain Color 1</label>
+            <input class="slider slider-r" id="c1-r" max="255" min="0" type="range" value="0">
+            <input class="slider slider-g" id="c1-g" max="255" min="0" type="range" value="0">
+            <input class="slider slider-b" id="c1-b" max="255" min="0" type="range" value="0">
+        </div>
+        <div class="group">
+            <label>Terrain Color 2</label>
+            <input class="slider slider-r" id="c2-r" max="255" min="0" type="range" value="255">
+            <input class="slider slider-g" id="c2-g" max="255" min="0" type="range" value="255">
+            <input class="slider slider-b" id="c2-b" max="255" min="0" type="range" value="255">
+        </div>
+        <button class="button" id="randomize">Randomize</button>
+    </div>
+    <div id="stats">
+        <span id="fps"></span>
+        <span id="frames"></span>
+        <span id="zoom"></span>
+    </div>
+</body>
+</html>
